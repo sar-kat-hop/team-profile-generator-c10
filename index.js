@@ -91,13 +91,39 @@ inquirer.prompt([
                             message: "Please enter the intern's school",
                             name: 'internSchool',
                         },
-                    ])
+                    ]).then((internInfo) => {
+                        //save to json file?
+                        //append to html
+                        console.log("New intern: " + internInfo);
+                        inquirer.prompt([
+                            {
+                                type: 'list',
+                                message: 'What would you like to do?',
+                                choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
+                                name: 'action',
+                            },
+                        ]);
+
+                    })
                 ;
                     break;
                 default:
                     break;
-        }
-    }
+        }        
+        };
+
+        //wait for user to make choice before proceeding
+
+
+        //does not work:
+        // const init = async() => {
+        //     let action;
+        //     while (action != 'Quit') {
+        //         action = (await prompt().action); 
+        //         performAction(action);
+        //     }
+        // }
+
     
     //save user input for team mgr info into json file for info verification purposes?
     // .then((data) => {
