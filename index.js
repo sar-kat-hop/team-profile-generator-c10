@@ -3,8 +3,7 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-inquirer
-    .prompt([
+inquirer.prompt([
         {
             type: 'input',
             message: 'Please enter team manager name',
@@ -32,6 +31,21 @@ inquirer
             name: 'action',
         },
     ]);
+    
+    const performAction = async(action) => {
+        switch(action) {
+            case 'Add an engineer to my team' : // new prompts specific to engineer//
+            ;
+                break;
+            case 'Add an intern to my team' : // new prompts specific to intern//
+            ;
+                break;
+            default:
+                break;
+        }
+    }
+    
+
 
     //save user input for team mgr info into json file for info verification purposes?
     // .then((data) => {
