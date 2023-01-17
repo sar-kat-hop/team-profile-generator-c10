@@ -35,18 +35,70 @@ inquirer.prompt([
     const performAction = async(action) => {
         switch(action) {
             case 'Add an engineer to my team' : // new prompts specific to engineer//
-            ;
-                break;
-            case 'Add an intern to my team' : // new prompts specific to intern//
-            ;
-                break;
-            default:
-                break;
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message: "Please enter the engineer's name",
+                        name: 'engiName',
+                    },
+                    {
+                        type: 'number',
+                        message: "Please enter the engineer's ID number",
+                        name: 'engiId',
+                    },
+                    {
+                        type: 'input',
+                        message: "Please enter the engineer's email address",
+                        name: 'engiEmail',
+                    },
+                    {
+                        type: 'number',
+                        message: "Please enter the engineer's GitHub username",
+                    },
+                        ]).then((engiInfo) => {
+                            //save to json file?
+                            //append to html
+                            console.log("New engineer: " + engiInfo);
+                                inquirer.prompt([
+                                    {
+                                        type: 'list',
+                                        message: 'What would you like to do?',
+                                        choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
+                                        name: 'action',
+                                    },
+                                ]);
+                            });
+                    break;
+                case 'Add an intern to my team' : // new prompts specific to intern//
+                    inquirer.prompt([
+                        {
+                            type: 'input',
+                            message: "Please enter the intern's name",
+                            name: 'internName',
+                        },
+                        {
+                            type: 'number',
+                            message: "Please enter the intern's ID number",
+                            name: 'internId',
+                        },
+                        {
+                            type: 'input',
+                            message: "Please enter the intern's email address",
+                            name: 'internEmail',
+                        },
+                        {
+                            type: 'number',
+                            message: "Please enter the intern's school",
+                            name: 'internSchool',
+                        },
+                    ])
+                ;
+                    break;
+                default:
+                    break;
         }
     }
     
-
-
     //save user input for team mgr info into json file for info verification purposes?
     // .then((data) => {
         // const filename = `${data.name.toLowerCase().split(' ').join('')}.json`;
