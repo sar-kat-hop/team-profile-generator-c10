@@ -31,10 +31,10 @@ inquirer.prompt([
             name: 'action',
         },
     ]);
-    
+    //change switch fxn to if statement? 
     const performAction = async(action) => {
         switch(action) {
-            case 'Add an engineer to my team' : // new prompts specific to engineer//
+            case 'Add an engineer to my team' : // new prompts specific to engineer
                 inquirer.prompt([
                     {
                         type: 'input',
@@ -69,7 +69,7 @@ inquirer.prompt([
                                 ]);
                             });
                     break;
-                case 'Add an intern to my team' : // new prompts specific to intern//
+                case 'Add an intern to my team' : // new prompts specific to intern
                     inquirer.prompt([
                         {
                             type: 'input',
