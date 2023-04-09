@@ -3,114 +3,203 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-inquirer.prompt([
-        {
-            type: 'input',
-            message: 'Please enter team manager name',
-            name: 'mgrName',
-        },
-        {
-            type: 'number',
-            message: 'Please enter team manager employee ID',
-            name: 'mgrId',
-        },
-        {
-            type: 'input',
-            message: 'Please enter team manager email address',
-            name: 'mgrEmail',
-        },
-        {
-            type: 'number',
-            message: 'Please enter team manager office number',
-            name: 'mgrOffice',
-        },
+//refactor using async
+async function start() {
+    const answer = await inquirer.prompt(
         {
             type: 'list',
+            name: 'userAction',
             message: 'What would you like to do?',
-            choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-            name: 'action',
-        },
-    ]);
-    //change switch fxn to if statement? 
-    const performAction = async(action) => {
-        switch(action) {
-            case 'Add an engineer to my team' : // new prompts specific to engineer
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        message: "Please enter the engineer's name",
-                        name: 'engiName',
-                    },
-                    {
-                        type: 'number',
-                        message: "Please enter the engineer's ID number",
-                        name: 'engiId',
-                    },
-                    {
-                        type: 'input',
-                        message: "Please enter the engineer's email address",
-                        name: 'engiEmail',
-                    },
-                    {
-                        type: 'number',
-                        message: "Please enter the engineer's GitHub username",
-                    },
-                        ]).then((engiInfo) => {
-                            //save to json file?
-                            //append to html
-                            console.log("New engineer: " + engiInfo);
-                                inquirer.prompt([
-                                    {
-                                        type: 'list',
-                                        message: 'What would you like to do?',
-                                        choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-                                        name: 'action',
-                                    },
-                                ]);
-                            });
-                    break;
-                case 'Add an intern to my team' : // new prompts specific to intern
-                    inquirer.prompt([
-                        {
-                            type: 'input',
-                            message: "Please enter the intern's name",
-                            name: 'internName',
-                        },
-                        {
-                            type: 'number',
-                            message: "Please enter the intern's ID number",
-                            name: 'internId',
-                        },
-                        {
-                            type: 'input',
-                            message: "Please enter the intern's email address",
-                            name: 'internEmail',
-                        },
-                        {
-                            type: 'number',
-                            message: "Please enter the intern's school",
-                            name: 'internSchool',
-                        },
-                    ]).then((internInfo) => {
-                        //save to json file?
-                        //append to html
-                        console.log("New intern: " + internInfo);
-                        inquirer.prompt([
-                            {
-                                type: 'list',
-                                message: 'What would you like to do?',
-                                choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-                                name: 'action',
-                            },
-                        ]);
+            choices: [
+                { name: 'addEngi', value: 'Add an engineer to my team'},
+                { name: 'addIntern', value: 'Add an intern to my team'},
+                { name: 'viewTeam', value: 'View my team'},
+                { name: 'exit', value: 'Quit'},
+            ],
+        });
 
-                    })
-                ;
-                    break;
-                default:
-                    break;
-        }        
-        };
+    if (answer.option === 'addEngi') {
+        const newEngi = await inquirer.prompt([
+            {
+                type: 'input',
+                message: "Please enter the engineer's name",
+                name: 'engiName',
+            },
+            {
+                type: 'input',
+                message: "Please enter the engineer's email address",
+                name: 'engiEmail',
+            },
+            {
+                type: 'number',
+                message: "Please enter the engineer's GitHub username",
+            },
+        ]);
+        console.log("New engineer added: " + newEngi);
+        //wait until action is performed before asking if user wants to go back
+        await showReturnMsg();
+
+    } else if (answer.option === 'addIntern') {
+        const newIntern = await inquirer.prompt([
+            {
+                type: 'input',
+                message: "Please enter the intern's name",
+                name: 'internName',
+            },
+            {
+                type: 'number',
+                message: "Please enter the intern's ID number",
+                name: 'internId',
+            },
+            {
+                type: 'input',
+                message: "Please enter the intern's email address",
+                name: 'internEmail',
+            },
+            {
+                type: 'number',
+                message: "Please enter the intern's school",
+                name: 'internSchool',
+            },
+        ]);
+        console.log("New intern added: " + newIntern);
+        await showReturnMsg();
+
+    } else if (answer.option === 'viewTeam') {
+
+    }
+}
+
+async function showReturnMsg() {
+    const bottomBar = new inquirer.ui.BottomBar();
+    bottomBar.updateBottomBar("Press any key to continue or 'm' to return to the menu.");
+    const keyPress = await keypress();
+
+    if (keyPress === "m") {
+        start();
+    } else {
+        bottomBar.updateBottomBar("");
+    }
+}
+
+function keypress() {
+    return new Promise((resolve) => {
+        process.stdin.once("data", (data) => {
+            resolve(data.toString().trim());
+        });
+    });
+}
+
+start();
+
+// inquirer.prompt([
+//         {
+//             type: 'input',
+//             message: 'Please enter team manager name',
+//             name: 'mgrName',
+//         },
+//         {
+//             type: 'number',
+//             message: 'Please enter team manager employee ID',
+//             name: 'mgrId',
+//         },
+//         {
+//             type: 'input',
+//             message: 'Please enter team manager email address',
+//             name: 'mgrEmail',
+//         },
+//         {
+//             type: 'number',
+//             message: 'Please enter team manager office number',
+//             name: 'mgrOffice',
+//         },
+//         {
+//             type: 'list',
+//             message: 'What would you like to do?',
+//             choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
+//             name: 'action',
+//         },
+//     ]);
+//     //change switch fxn to if statement? 
+//     const performAction = async(action) => {
+//         switch(action) {
+//             case 'Add an engineer to my team' : // new prompts specific to engineer
+//                 inquirer.prompt([
+//                     {
+//                         type: 'input',
+//                         message: "Please enter the engineer's name",
+//                         name: 'engiName',
+//                     },
+//                     {
+//                         type: 'number',
+//                         message: "Please enter the engineer's ID number",
+//                         name: 'engiId',
+//                     },
+//                     {
+//                         type: 'input',
+//                         message: "Please enter the engineer's email address",
+//                         name: 'engiEmail',
+//                     },
+//                     {
+//                         type: 'number',
+//                         message: "Please enter the engineer's GitHub username",
+//                     },
+//                         ]).then((engiInfo) => {
+//                             //save to json file?
+//                             //append to html
+//                             console.log("New engineer: " + engiInfo);
+//                                 inquirer.prompt([
+//                                     {
+//                                         type: 'list',
+//                                         message: 'What would you like to do?',
+//                                         choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
+//                                         name: 'action',
+//                                     },
+//                                 ]);
+//                             });
+//                     break;
+//                 case 'Add an intern to my team' : // new prompts specific to intern
+//                     inquirer.prompt([
+//                         {
+//                             type: 'input',
+//                             message: "Please enter the intern's name",
+//                             name: 'internName',
+//                         },
+//                         {
+//                             type: 'number',
+//                             message: "Please enter the intern's ID number",
+//                             name: 'internId',
+//                         },
+//                         {
+//                             type: 'input',
+//                             message: "Please enter the intern's email address",
+//                             name: 'internEmail',
+//                         },
+//                         {
+//                             type: 'number',
+//                             message: "Please enter the intern's school",
+//                             name: 'internSchool',
+//                         },
+//                     ]).then((internInfo) => {
+//                         //save to json file?
+//                         //append to html
+//                         console.log("New intern: " + internInfo);
+//                         inquirer.prompt([
+//                             {
+//                                 type: 'list',
+//                                 message: 'What would you like to do?',
+//                                 choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
+//                                 name: 'action',
+//                             },
+//                         ]);
+
+//                     })
+//                 ;
+//                     break;
+//                 default:
+//                     break;
+//         }        
+//         };
 
         //wait for user to make choice before proceeding
 
