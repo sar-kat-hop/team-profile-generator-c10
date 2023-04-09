@@ -2,10 +2,18 @@
 // const { response } = require('express');
 const inquirer = require('inquirer');
 const fs = require('fs');
+const { Employee, Engineer, Intern, Manager } = require('./lib');
+const path = require('path');
 
+const dist = path.resolve(__dirname, 'dist');
+const distPath = path.join(dist, 'teambuilder.html');
 
+const templateHelper = require('./dist/templateHelper')
+
+const team = [];
 
 async function start() {
+    console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
     const answer = await inquirer.prompt({
         type: 'input',
         name: 'mgrName',
