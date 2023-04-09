@@ -1,19 +1,12 @@
 //TODO: use inquirer to collect user input in console
 // const { response } = require('express');
 const inquirer = require('inquirer');
-const fs = require('fs');
-const { Employee, Engineer, Intern, Manager } = require('./lib');
-const path = require('path');
+// const fs = require('fs'); //move to templateHemper.js
+const { Engineer, Intern, Manager } = require('./lib');
 
-const dist = path.resolve(__dirname, 'dist');
-const distPath = path.join(dist, 'teambuilder.html');
+const templateHelper = require('./src/templateHelper')
 
-const templateHelper = require('./dist/templateHelper')
-
-const team = [];
-const mgrData = new Manager();
-const engiData = new Engineer();
-const internData = new Intern();
+const teamMembers = []; //push new teammates to array to pass to render html fxn
 
 async function start() {
     console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
@@ -49,11 +42,7 @@ async function start() {
         ],
     });
 
-    mgrData.getName(answer.mgrName);
-    mgrData.getEmail(answer.mgrEmail);
-    mgrData.getId(answer.mgrID);
-    mgrData.getOfficeNumber(answer.mgrOffice);
-        console.log(mgrData.ge)
+    //then, make new manager object here
 
     if (answer.menu === 'addEngi') {
         // ask questions for option 1
@@ -79,6 +68,8 @@ async function start() {
             message: "Enter the engineer's GitHub username:"
         }
         ]);
+        
+        //then, make new engineer object here
         console.log(`New engineer added: ${menuEngi.engiName}`);
         await showReturnMessage();
 
@@ -106,6 +97,8 @@ async function start() {
             message: "Enter the intern's school:",
         }
         ]);
+
+        //then, make new intern object here
         console.log(`New intern added: ${menuIntern.internName}`);
         await showReturnMessage();
 
@@ -139,6 +132,7 @@ async function showReturnMessage() {
 
         } else if (keyPress === '\u001b') { // check for "escape" key press
             process.exit(); // exit the app
+            //TODO: call fxn to render html here!
         }
         // if the user presses a key other than "m" or "Esc"
         bottomBar.updateBottomBar('Ivalid key pressed. Please press "m" to return to the menu or "esc" to quit.');
