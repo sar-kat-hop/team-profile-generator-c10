@@ -3,126 +3,100 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
 
-inquirer.prompt([
+
+
+async function start() {
+    const answer = await inquirer.prompt({
+        type: 'list',
+        name: 'menu',
+        message: 'What would you like to do?',
+        choices: [
+        { name: 'Add a new engineer to my team', value: 'addEngi' },
+        { name: 'Add a new intern to my team', value: 'addIntern' },
+        { name: 'View my team', value: 'viewTeam' },
+        { name: 'Quit', value: 'quit'},
+        ],
+    });
+
+    if (answer.menu === 'addEngi') {
+        // ask questions for option 1
+        const menuEngi = await inquirer.prompt([
         {
             type: 'input',
-            message: 'Please enter team manager name',
-            name: 'mgrName',
-        },
-        {
-            type: 'number',
-            message: 'Please enter team manager employee ID',
-            name: 'mgrId',
+            name: 'engiName',
+            message: "Enter the engineer's name:",
         },
         {
             type: 'input',
-            message: 'Please enter team manager email address',
-            name: 'mgrEmail',
+            name: 'engiEmail',
+            message: "Enter the engineer's email:",
         },
         {
-            type: 'number',
-            message: 'Please enter team manager office number',
-            name: 'mgrOffice',
-        },
+            type: 'input',
+            name: 'engiGit',
+            message: "Enter the engineer's GitHub portfolio URL:"
+        }
+        ]);
+        console.log(`New engineer added: ${menuEngi.engiName}`);
+        await showReturnMessage();
+
+    } else if (answer.menu === 'addIntern') {
+        // ask questions for option 2
+        const menuIntern = await inquirer.prompt([
         {
-            type: 'list',
-            message: 'What would you like to do?',
-            choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-            name: 'action',
+            type: 'input',
+            name: 'internName',
+            message: "Enter the intern's name:",
         },
-    ]);
-    //change switch fxn to if statement? 
-    const performAction = async(action) => {
-        switch(action) {
-            case 'Add an engineer to my team' : // new prompts specific to engineer
-                inquirer.prompt([
-                    {
-                        type: 'input',
-                        message: "Please enter the engineer's name",
-                        name: 'engiName',
-                    },
-                    {
-                        type: 'number',
-                        message: "Please enter the engineer's ID number",
-                        name: 'engiId',
-                    },
-                    {
-                        type: 'input',
-                        message: "Please enter the engineer's email address",
-                        name: 'engiEmail',
-                    },
-                    {
-                        type: 'number',
-                        message: "Please enter the engineer's GitHub username",
-                    },
-                        ]).then((engiInfo) => {
-                            //save to json file?
-                            //append to html
-                            console.log("New engineer: " + engiInfo);
-                                inquirer.prompt([
-                                    {
-                                        type: 'list',
-                                        message: 'What would you like to do?',
-                                        choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-                                        name: 'action',
-                                    },
-                                ]);
-                            });
-                    break;
-                case 'Add an intern to my team' : // new prompts specific to intern
-                    inquirer.prompt([
-                        {
-                            type: 'input',
-                            message: "Please enter the intern's name",
-                            name: 'internName',
-                        },
-                        {
-                            type: 'number',
-                            message: "Please enter the intern's ID number",
-                            name: 'internId',
-                        },
-                        {
-                            type: 'input',
-                            message: "Please enter the intern's email address",
-                            name: 'internEmail',
-                        },
-                        {
-                            type: 'number',
-                            message: "Please enter the intern's school",
-                            name: 'internSchool',
-                        },
-                    ]).then((internInfo) => {
-                        //save to json file?
-                        //append to html
-                        console.log("New intern: " + internInfo);
-                        inquirer.prompt([
-                            {
-                                type: 'list',
-                                message: 'What would you like to do?',
-                                choices: ['Add an engineer to my team', 'Add an intern to my team', new inquirer.Separator(), 'Quit'],
-                                name: 'action',
-                            },
-                        ]);
+        ]);
+        console.log(`New intern added: ${menuIntern.internName}`);
+        await showReturnMessage();
 
-                    })
-                ;
-                    break;
-                default:
-                    break;
-        }        
-        };
+    } else if (answer.menu === 'viewTeam') {
+        // ask questions for option 3
+        const menuTeam = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'seeTeam',
+            message: 'Here is your team:',
+        },
+        ]);
+        console.log(`${menuTeam.seeTeam}`);
+        await showReturnMessage();
+    }
+}
 
-        //wait for user to make choice before proceeding
+async function showReturnMessage() {
+    const bottomBar = new inquirer.ui.BottomBar();
 
+    while (true) {
+        bottomBar.updateBottomBar(
+            "Press 'm' to return to the menu or 'esc' to quit."
+        );
+        
+        const keyPress = await keypress();
 
-        //does not work:
-        // const init = async() => {
-        //     let action;
-        //     while (action != 'Quit') {
-        //         action = (await prompt().action); 
-        //         performAction(action);
-        //     }
-        // }
+        if (keyPress === 'm') {
+            return start();
+
+        } else if (keyPress === '\u001b') { // check for "escape" key press
+            process.exit(); // exit the app
+        }
+        // if the user presses a key other than "m" or "Esc"
+        bottomBar.updateBottomBar('Ivalid key pressed. Please press "m" to return to the menu or "esc" to quit.');
+        }
+    }
+
+function keypress() {
+    return new Promise((resolve) => {
+        process.stdin.once('data', (data) => {
+            resolve(data.toString().trim());
+        });
+    });
+}
+
+start();
+
 
     
     //save user input for team mgr info into json file for info verification purposes?
