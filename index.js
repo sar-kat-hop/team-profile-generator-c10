@@ -123,7 +123,7 @@ async function start() {
     }
 };
 
-//TODO: add ability to save user input to db when exiting app
+//TODO: add ability to render user input in html on exiting app
 async function showReturnMessage() {
     const bottomBar = new inquirer.ui.BottomBar();
 
