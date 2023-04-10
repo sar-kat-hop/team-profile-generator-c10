@@ -2,7 +2,7 @@ const { error } = require('console');
 const fs = require('fs');
 
 function renderPage(teamData) {
-    let teamData = [];
+    let teamCards = [];
 
     //need to make sure html framework appended on its own, sandwiching employee cards
     const htmlHead = 
@@ -39,35 +39,35 @@ function renderPage(teamData) {
     </html>
     `;
 
-    for (const employee of teamData) {
+    for (const employee of teamCards) {
         const employeeCard = 
         `
         <div class="card border m-3" style="height: 250px; width: 275px">
             <div class="card-header text-center p-3 bg-info text-white fs-5">
-            ${teamData.getRole()}
+            ${employee.getRole()}
             </div>
             <div class="card-body">
                 <p class="fw-light fst-italic lh-1 text-wrap text-center p-0">
-                ${teamData.name}
+                ${employee.name}
                 </p>
             <ul class="fw-light">
                 <li class="lw-light lh-1 text-wrap p-0"> <b>ID: </b>
-                ${teamData.id}
+                ${employee.id}
                 </li>
                 <li class="lw-light lh-1 text-wrap p-0"> <b>Email: </b>
                 <a href="mailto:Email">${teamData.email}</a></li>
                 <li class="lw-light lh-1 text-wrap p-0"> <b>
-                ${Object.keys(teamData).slice(-1)}: </b>${teamData.officeNumber || teamData.gitHub || teamData.school }
+                ${Object.keys(employee).slice(-1)}: </b>${employee.officeNumber || employee.gitHub || employee.school }
                 </li>
             </ul>
             </div>
         </div>
         `;
 
-        teamData.push(employeeCard);
+        teamCards.push(employeeCard);
     }
 
-    const htmlPage = htmlHead + teamData + htmlFoot;
+    const htmlPage = htmlHead + teamCards + htmlFoot;
 
     //add everything together to write to page
     fs.writeFile("./dist/index.html", htmlPage, () => {

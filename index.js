@@ -2,7 +2,10 @@
 // const { response } = require('express');
 const inquirer = require('inquirer');
 // const fs = require('fs'); //move to templateHemper.js
-const { Engineer, Intern, Manager } = require('./lib');
+// const { Engineer, Intern, Manager } = require('./lib');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
+const Manager = require('./lib/Manager');
 
 const renderPage = require('./src/templateHelper')
 
@@ -10,9 +13,7 @@ let teamMembers = []; //push new teammates to array to pass to render html fxn
 
 async function start() {
     console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
-
-    const answer = await inquirer.prompt(
-        {
+    const answer = await inquirer.prompt({
         type: 'input',
         name: 'mgrName',
         message: 'Please enter team manager name',
@@ -35,19 +36,19 @@ async function start() {
     {
         type: 'list',
         name: 'menu',
-        message: 'Welcome. What would you like to do?',
+        message: 'What would you like to do?',
         choices: [
         { name: 'Add a new engineer to my team', value: 'addEngi' },
         { name: 'Add a new intern to my team', value: 'addIntern' },
-        { name: 'View my team', value: 'viewTeam' },
+        // { name: 'View my team', value: 'viewTeam' },
         { name: 'Quit', value: 'quit'},
         ],
     });
 
     //then, make new manager object here
     //use await or .then???
-    const manager = new Manager(answer.mgrName, answer.mgrEmail, answer.mgrId, answer.mgrOffice);
-    teamMembers.push(manager);
+    // const manager = new Manager(answer.mgrName, answer.mgrEmail, answer.mgrId, answer.mgrOffice);
+    //     teamMembers.push(manager);
 
     //add engineer option
     if (answer.menu === 'addEngi') {
@@ -75,8 +76,8 @@ async function start() {
         ]);
         
         //then, make new engineer object here
-        const engineer = new Engineer(menuEngi.name, menuEngi.engiId, menuEngi.engiEmail, menuEngi.engiGit);
-        teamMembers.push(engineer);
+        // const engineer = new Engineer(menuEngi.name, menuEngi.engiId, menuEngi.engiEmail, menuEngi.engiGit);
+        // teamMembers.push(engineer);
 
         console.log(`New engineer added: ${menuEngi.engiName}`);
 
@@ -109,12 +110,17 @@ async function start() {
         ]);
 
         //then, make new intern object here
-        const intern = new Intern(menuIntern.name, menuIntern.internId, menuIntern.internEmail, menuIntern.internSchool);
-        teamMembers.push(intern);
+        // const intern = new Intern(menuIntern.name, menuIntern.internId, menuIntern.internEmail, menuIntern.internSchool);
+        // teamMembers.push(intern);
 
         console.log(`New intern added: ${menuIntern.internName}`);
 
         await showReturnMessage();
+
+    } else if (answer.menu === 'quit') {
+        console.log("Exiting app. Goodbye!");
+        process.exit();
+    };
 
     // } else if (answer.menu === 'viewTeam') {
     //     // ask questions for option 3
@@ -128,8 +134,7 @@ async function start() {
         // console.log(`${menuTeam.seeTeam}`);
         //additional fxnality needed to show team in console
         // await showReturnMessage();
-    }
-};
+}
 
 //TODO: add ability to render user input in html on exiting app
 async function showReturnMessage() {
@@ -146,7 +151,7 @@ async function showReturnMessage() {
             return start();
 
         } else if (keyPress === '\u001b') { // check for "escape" key press
-            await renderPage(teamMembers); //await needed?
+            // await renderPage(teamMembers); //await needed?
             console.log("Rendered HTML. Now exiting the program.");
             process.exit(); // exit the app
             //TODO: call fxn to render html here!
