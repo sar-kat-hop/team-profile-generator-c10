@@ -4,13 +4,15 @@ const inquirer = require('inquirer');
 // const fs = require('fs'); //move to templateHemper.js
 const { Engineer, Intern, Manager } = require('./lib');
 
-const templateHelper = require('./src/templateHelper')
+const renderPage = require('./src/templateHelper')
 
-const teamMembers = []; //push new teammates to array to pass to render html fxn
+let teamMembers = []; //push new teammates to array to pass to render html fxn
 
 async function start() {
     console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
-    const answer = await inquirer.prompt({
+
+    const answer = await inquirer.prompt(
+        {
         type: 'input',
         name: 'mgrName',
         message: 'Please enter team manager name',
@@ -43,9 +45,12 @@ async function start() {
     });
 
     //then, make new manager object here
+    //use await or .then???
+    const manager = new Manager(answer.mgrName, answer.mgrEmail, answer.mgrId, answer.mgrOffice);
+    teamMembers.push(manager);
 
+    //add engineer option
     if (answer.menu === 'addEngi') {
-        // ask questions for option 1
         const menuEngi = await inquirer.prompt([
         {
             type: 'input',
@@ -70,9 +75,14 @@ async function start() {
         ]);
         
         //then, make new engineer object here
+        const engineer = new Engineer(menuEngi.name, menuEngi.engiId, menuEngi.engiEmail, menuEngi.engiGit);
+        teamMembers.push(engineer);
+
         console.log(`New engineer added: ${menuEngi.engiName}`);
+
         await showReturnMessage();
 
+    //intern prompts
     } else if (answer.menu === 'addIntern') {
         // ask questions for option 2
         const menuIntern = await inquirer.prompt([
@@ -99,20 +109,25 @@ async function start() {
         ]);
 
         //then, make new intern object here
+        const intern = new Intern(menuIntern.name, menuIntern.internId, menuIntern.internEmail, menuIntern.internSchool);
+        teamMembers.push(intern);
+
         console.log(`New intern added: ${menuIntern.internName}`);
+
         await showReturnMessage();
 
-    } else if (answer.menu === 'viewTeam') {
-        // ask questions for option 3
-        const menuTeam = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'seeTeam',
-            message: 'Here is your team:',
-        },
-        ]);
-        console.log(`${menuTeam.seeTeam}`);
-        await showReturnMessage();
+    // } else if (answer.menu === 'viewTeam') {
+    //     // ask questions for option 3
+    //     const menuTeam = await inquirer.prompt([
+    //     {
+    //         type: 'input',
+    //         name: 'seeTeam',
+    //         message: 'Here is your team:',
+    //     },
+    //     ]);
+        // console.log(`${menuTeam.seeTeam}`);
+        //additional fxnality needed to show team in console
+        // await showReturnMessage();
     }
 };
 
@@ -131,6 +146,8 @@ async function showReturnMessage() {
             return start();
 
         } else if (keyPress === '\u001b') { // check for "escape" key press
+            await renderPage(teamMembers); //await needed?
+            console.log("Rendered HTML. Now exiting the program.");
             process.exit(); // exit the app
             //TODO: call fxn to render html here!
         }
