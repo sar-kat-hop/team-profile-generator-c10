@@ -67,12 +67,22 @@ function renderPage(teamData) {
         teamCards.push(employeeCard);
     }
 
-    const htmlPage = htmlHead + teamCards + htmlFoot;
+    // const htmlPage = htmlHead + teamCards + htmlFoot;
+
+    teamCards.forEach((employeeCard) => {
+        const fileLoc = './dist/index/html';
+        const content = htmlHead + employeeCard + htmlFoot;
+        
+        fs.writeFile(fileLoc, content, (err) => {
+            if (err) throw err;
+            console.log(`Team saved to page. View at: //${fileLoc}`)
+        });
+    });
 
     //add everything together to write to page
-    fs.writeFile("./dist/index.html", htmlPage, () => {
-        if(error) console.log("Error rendering html. ", error);
-    });
+    // fs.writeFile("./dist/index.html", htmlPage, () => {
+    //     if(error) console.log("Error rendering html. ", error);
+    // });
 
 }
 

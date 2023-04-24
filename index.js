@@ -7,120 +7,148 @@ const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
 
+const { mgrPrompts, mainMenu, addEngi, addIntern, continuePrompt } = require('./lib/questions');
+
 const renderPage = require('./src/templateHelper')
 
 let teamMembers = []; //push new teammates to array to pass to render html fxn
 
-async function start() {
-    console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
-    const answer = await inquirer.prompt({
-        type: 'input',
-        name: 'mgrName',
-        message: 'Please enter team manager name',
-    },        
-    {
-        type: 'input',
-        name: 'mgrEmail',
-        message: 'Please enter team manager email',
-    },
-    {
-        type: 'number',
-        name: 'mgrId',
-        message: 'Please enter team manager ID number',
-    },
-    {
-        type: 'number',
-        name: 'mgrOffice',
-        message: 'Please enter team manager office number'
-    },
-    {
-        type: 'list',
-        name: 'menu',
-        message: 'What would you like to do?',
-        choices: [
-        { name: 'Add a new engineer to my team', value: 'addEngi' },
-        { name: 'Add a new intern to my team', value: 'addIntern' },
-        // { name: 'View my team', value: 'viewTeam' },
-        { name: 'Quit', value: 'quit'},
-        ],
-    });
+async function mainMenu() {
+    const action = await inquirer.prompt(mainMenu);
 
-    //then, make new manager object here
-    //use await or .then???
-    // const manager = new Manager(answer.mgrName, answer.mgrEmail, answer.mgrId, answer.mgrOffice);
-    //     teamMembers.push(manager);
+    if (action.addEngi) {
+        const newEngi = await inquirer.prompt(addEngi);
 
-    //add engineer option
-    if (answer.menu === 'addEngi') {
-        const menuEngi = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'engiName',
-            message: "Enter the engineer's name:",
-        },
-        {
-            type: 'input',
-            name: 'engiId',
-            message: "Enter the engineer's ID number:",
-        },
-        {
-            type: 'input',
-            name: 'engiEmail',
-            message: "Enter the engineer's email:",
-        },
-        {
-            type: 'input',
-            name: 'engiGit',
-            message: "Enter the engineer's GitHub username:"
-        }
-        ]);
-        
-        //then, make new engineer object here
-        // const engineer = new Engineer(menuEngi.name, menuEngi.engiId, menuEngi.engiEmail, menuEngi.engiGit);
-        // teamMembers.push(engineer);
+        const engineer = new Engineer (newEngi.name, newEngi.id, newEngi.email, newEngi.github);
+
+        teamMembers.push(engineer);
 
         console.log(`New engineer added: ${menuEngi.engiName}`);
 
-        await showReturnMessage();
+        await continueMenu();
+    }
+
+    if (action.addIntern) {
+        const newIntern = await inquirer.prompt(addIntern);
+
+        const intern = new Intern (newIntern.name, newIntern.id, newIntern.email, newIntern.school);
+
+        teamMembers.push(intern);
+
+        console.log(`New intern added: ${newIntern.name}`);
+
+        await continueMenu();
+    }
+
+    else if (action.quit) {
+        if (!teamMembers) {
+            console.log('No employees added to team. Closing Team Builder. Gooybye!');
+        } else {
+            renderPage(teamMembers);
+        }
+        // renderPage()
+        process.exit();
+    }
+}
+
+async function continueMenu() {
+    const action = await inquirer.prompt(continuePrompt);
+}
+
+async function start() {
+    console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
+
+    const answer = await inquirer.prompt(mgrPrompts);
+    const manager = new Manager(answer.name, answer.email, answer.id, answer.office);
+    teamMembers.push(manager);
+
+    console.log(manager);
+    console.log(`Hi, ${answer.name}.`);
+
+    await mainMenu();
+}
+    //add engineer option
+    // if (answer.menu === 'addEngi') {
+    //     // const menuEngi = await inquirer.prompt([
+    //     // {
+    //     //     type: 'input',
+    //     //     name: 'engiName',
+    //     //     message: "Enter the engineer's name:",
+    //     // },
+    //     // {
+    //     //     type: 'input',
+    //     //     name: 'engiId',
+    //     //     message: "Enter the engineer's ID number:",
+    //     // },
+    //     // {
+    //     //     type: 'input',
+    //     //     name: 'engiEmail',
+    //     //     message: "Enter the engineer's email:",
+    //     // },
+    //     // {
+    //     //     type: 'input',
+    //     //     name: 'engiGit',
+    //     //     message: "Enter the engineer's GitHub username:"
+    //     // },
+    //     // {
+    //     //     type: 'input',
+    //     //     name: 'continue',
+    //     //     message: 'Would you like to add another employee?',
+    //     // }
+    //     // ]);
+        
+    //     //then, make new engineer object here
+    //     // const engineer = new Engineer(menuEngi.name, menuEngi.engiId, menuEngi.engiEmail, menuEngi.engiGit);
+    //     // teamMembers.push(engineer);
+    //     const newEngi = await inquirer.prompt(addEngi);
+    //     const engineer = new Engineer (newEngi.name, newEngi.id, newEngi.email, newEngi.github);
+    //     teamMembers.push(engineer);
+    //     console.log(`New engineer added: ${menuEngi.engiName}`);
+
+            // if (menuEngi.continue) {
+
+            // }
+
+        // await showReturnMessage();
 
     //intern prompts
-    } else if (answer.menu === 'addIntern') {
-        // ask questions for option 2
-        const menuIntern = await inquirer.prompt([
-        {
-            type: 'input',
-            name: 'internName',
-            message: "Enter the intern's name:",
-        },
-        {
-            type: 'number',
-            name: 'internId',
-            message: "Enter the intern's ID number:",
-        },
-        {
-            type: 'input',
-            name: 'internEmail',
-            message: "Enter the intern's email:",
-        },
-        {
-            type: 'input',
-            name: 'internSchool',
-            message: "Enter the intern's school:",
-        }
-        ]);
+    // } else if (answer.menu === 'addIntern') {
+    //     // ask questions for option 2
+    //     const menuIntern = await inquirer.prompt([
+    //     {
+    //         type: 'input',
+    //         name: 'internName',
+    //         message: "Enter the intern's name:",
+    //     },
+    //     {
+    //         type: 'number',
+    //         name: 'internId',
+    //         message: "Enter the intern's ID number:",
+    //     },
+    //     {
+    //         type: 'input',
+    //         name: 'internEmail',
+    //         message: "Enter the intern's email:",
+    //     },
+    //     {
+    //         type: 'input',
+    //         name: 'internSchool',
+    //         message: "Enter the intern's school:",
+    //     }
+    //     ]);
 
         //then, make new intern object here
         // const intern = new Intern(menuIntern.name, menuIntern.internId, menuIntern.internEmail, menuIntern.internSchool);
         // teamMembers.push(intern);
 
-        console.log(`New intern added: ${menuIntern.internName}`);
+        // console.log(`New intern added: ${menuIntern.internName}`);
 
-        await showReturnMessage();
+        // await showReturnMessage();
 
-    } else if (answer.menu === 'quit') {
-        console.log("Exiting app. Goodbye!");
-        process.exit();
-    };
+    // } else if (answer.menu === 'quit') {
+    //     console.log("Exiting app. Goodbye!");
+    //     process.exit();
+    // };
 
     // } else if (answer.menu === 'viewTeam') {
     //     // ask questions for option 3
@@ -134,7 +162,7 @@ async function start() {
         // console.log(`${menuTeam.seeTeam}`);
         //additional fxnality needed to show team in console
         // await showReturnMessage();
-}
+// }
 
 //TODO: add ability to render user input in html on exiting app
 async function showReturnMessage() {
@@ -152,6 +180,7 @@ async function showReturnMessage() {
 
         } else if (keyPress === '\u001b') { // check for "escape" key press
             // await renderPage(teamMembers); //await needed?
+            renderPage(teamMembers);
             console.log("Rendered HTML. Now exiting the program.");
             process.exit(); // exit the app
             //TODO: call fxn to render html here!
@@ -171,85 +200,85 @@ function keypress() {
 
 start();
 
-const managerQuestions = [
-    {
-        type: 'input',
-        name: 'mgrName',
-        message: 'Please enter team manager name',
-    },
-    {
-        type: 'input',
-        name: 'mgrEmail',
-        message: 'Please enter team manager email',
-    },
-    {
-        type: 'number',
-        name: 'mgrId',
-        message: 'Please enter team manager ID number',
-    },
-    {
-        type: 'number',
-        name: 'mgrOffice',
-        message: 'Please enter team manager office number'
-    },
-    {
-        type: 'list',
-        name: 'menu',
-        message: 'What would you like to do?',
-        choices: [
-        { name: 'Add a new engineer to my team', value: 'addEngi' },
-        { name: 'Add a new intern to my team', value: 'addIntern' },
-        // { name: 'View my team', value: 'viewTeam' },
-        { name: 'Quit', value: 'quit'},
-        ],
-    }
-];
+// const managerQuestions = [
+//     {
+//         type: 'input',
+//         name: 'mgrName',
+//         message: 'Please enter team manager name',
+//     },
+//     {
+//         type: 'input',
+//         name: 'mgrEmail',
+//         message: 'Please enter team manager email',
+//     },
+//     {
+//         type: 'number',
+//         name: 'mgrId',
+//         message: 'Please enter team manager ID number',
+//     },
+//     {
+//         type: 'number',
+//         name: 'mgrOffice',
+//         message: 'Please enter team manager office number'
+//     },
+//     {
+//         type: 'list',
+//         name: 'menu',
+//         message: 'What would you like to do?',
+//         choices: [
+//         { name: 'Add a new engineer to my team', value: 'addEngi' },
+//         { name: 'Add a new intern to my team', value: 'addIntern' },
+//         // { name: 'View my team', value: 'viewTeam' },
+//         { name: 'Quit', value: 'quit'},
+//         ],
+//     }
+// ];
 
-const engiQuestions = [
-    {
-        type: 'input',
-        name: 'engiName',
-        message: "Enter the engineer's name:",
-    },
-    {
-        type: 'input',
-        name: 'engiId',
-        message: "Enter the engineer's ID number:",
-    },
-    {
-        type: 'input',
-        name: 'engiEmail',
-        message: "Enter the engineer's email:",
-    },
-    {
-        type: 'input',
-        name: 'engiGit',
-        message: "Enter the engineer's GitHub username:"
-    }
-];
+// const engiQuestions = [
+//     {
+//         type: 'input',
+//         name: 'engiName',
+//         message: "Enter the engineer's name:",
+//     },
+//     {
+//         type: 'input',
+//         name: 'engiId',
+//         message: "Enter the engineer's ID number:",
+//     },
+//     {
+//         type: 'input',
+//         name: 'engiEmail',
+//         message: "Enter the engineer's email:",
+//     },
+//     {
+//         type: 'input',
+//         name: 'engiGit',
+//         message: "Enter the engineer's GitHub username:"
+//     }
+// ];
 
-const internQuestions = [
-    {
-        type: 'input',
-        name: 'internName',
-        message: "Enter the intern's name:",
-    },
-    {
-        type: 'number',
-        name: 'internId',
-        message: "Enter the intern's ID number:",
-    },
-    {
-        type: 'input',
-        name: 'internEmail',
-        message: "Enter the intern's email:",
-    },
-    {
-        type: 'input',
-        name: 'internSchool',
-        message: "Enter the intern's school:",
-    }
-];
+// const internQuestions = [
+//     {
+//         type: 'input',
+//         name: 'internName',
+//         message: "Enter the intern's name:",
+//     },
+//     {
+//         type: 'number',
+//         name: 'internId',
+//         message: "Enter the intern's ID number:",
+//     },
+//     {
+//         type: 'input',
+//         name: 'internEmail',
+//         message: "Enter the intern's email:",
+//     },
+//     {
+//         type: 'input',
+//         name: 'internSchool',
+//         message: "Enter the intern's school:",
+//     }
+// ];
 
     
     //save user input for team mgr info into json file for info verification purposes?
@@ -298,8 +327,3 @@ const internQuestions = [
                     
     //         })
             
-
-//TODO: write user input to index.html file (check activities for fs read and write fxns, make sure updates are persistant and not overwriting past changes)
-    //TODO: also check activities for past example of generating html dynamically using template literals
-
-//TODO: deploy to heroku?
