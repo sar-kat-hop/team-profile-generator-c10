@@ -14,7 +14,7 @@ function renderPage(teamMembers) {
 
     // const renderHeader = () => {
     const header = `
-        <!DOCTYPE html>
+    <!DOCTYPE html>
         <html lang="en">
             <head>
                 <meta charset="UTF-8">
@@ -80,10 +80,12 @@ function renderPage(teamMembers) {
                     <li class="lw-light lh-1 text-wrap p-0"> <b>Email: </b>
                         <a href="mailto:Email">${employee.email}</a></li>
                     ${specialInfo}
+                    </div>
+                </div>
                 `;
     }).join('');
 
-    const htmlPage = header + employeeCards + '</div></div></body></html>';
+    const htmlPage = header + employeeCards + '</div></body></html>';
 
     fs.writeFileSync('myteam.html', htmlPage);
 
