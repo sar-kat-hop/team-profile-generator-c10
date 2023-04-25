@@ -1,6 +1,4 @@
 const inquirer = require('inquirer');
-// const fs = require('fs'); //move to templateHemper.js
-// const { Engineer, Intern, Manager } = require('./lib');
 const Engineer = require('./lib/Engineer');
 const Intern = require('./lib/Intern');
 const Manager = require('./lib/Manager');
@@ -13,7 +11,7 @@ let teamMembers = []; //push new teammates to array to pass to render html fxn
 
 function menu() {
     inquirer.prompt(mainMenu).then((answer) => {
-        console.log(answer);
+        // console.log(answer);
         if (answer.menu === 'addEngi') {
             console.log('Adding new engineer...');
                 addNewEngi();
@@ -37,7 +35,6 @@ function menu() {
 };
 
 function addNewEngi() {
-    // const engineer = new Engineer (newEngi.name, newEngi.id, newEngi.email, newEngi.github);
     inquirer.prompt(addEngineer)
         .then((engineer) => {
             const newEngineer = new Engineer(engineer.name, engineer.id, engineer.email, engineer.github);
@@ -48,7 +45,6 @@ function addNewEngi() {
 };
 
 function addNewIntern() {
-    // const intern = new Intern (newIntern.name, newIntern.id, newIntern.email, newIntern.school)
     inquirer.prompt(addIntern)
         .then((intern) => {
             const newIntern = new Intern(intern.name, intern.id, intern.email, intern.school);
@@ -71,7 +67,7 @@ function continueMenu() {
 
             } else {
                 renderPage(teamMembers);
-                    (console.log('New employees added to your team. View ./dist/index.html in your browser to see your team.'))
+                    (console.log('New employees added to your team. Open ./myteam.html in your browser to see your team.'))
                         (process.exit());
             }
         }
