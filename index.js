@@ -93,6 +93,8 @@ async function start() {
 function renderPage(teamMembers) {
     // let teamCards = [];
 
+    let specialInfo = ''; //for writing `if/else` statement to grab office, github, or school based on type of employee
+
     // const htmlHead = 
     // `
     // <!DOCTYPE html>
@@ -127,6 +129,21 @@ function renderPage(teamMembers) {
     // </html>
     // `;
 
+    // grab unique info for each ee type to render conditionally, using instanceOf
+    
+    teamMembers.forEach(employee => {
+        if (employee instanceof Manager) {
+            let specialInfo = `Office No.: ${employee.office}`;
+        } else if (employee instanceof Engineer) {
+            let specialInfo = `GitHub Username: ${employee.github}`;
+        } else if (employee instanceof Intern) {
+            let specialInfo = `School: ${employee.school}`;
+        }
+
+        console.log(specialInfo);
+            return specialInfo;
+    });
+
     //refactor card-creation
     const employeeCard = teamMembers.map((employee) => {
         return `
@@ -145,7 +162,7 @@ function renderPage(teamMembers) {
             <li class="lw-light lh-1 text-wrap p-0"> <b>Email: </b>
             <a href="mailto:Email">${employee.email}</a></li>
             <li class="lw-light lh-1 text-wrap p-0"> <b>
-                ${Object.keys(employee).slice(-1)}: </b>${employee.officeNumber || employee.gitHub || employee.school }
+                ${specialInfo}
             </li>
         </ul>
         </div>
@@ -164,23 +181,24 @@ function renderPage(teamMembers) {
         <title>TeamBuilder</title>
     </head>
 
-    <body class="bg-light">
-        <header class="bg-info p-4">
-            <div class="container-fluid text-center text-white">
-                <h1>TeamBuilder</h1>
+        <body class="bg-light">
+            <header class="bg-info p-4">
+                <div class="container-fluid text-center text-white">
+                    <h1>TeamBuilder</h1>
+                </div>
+            </header>
+
+            <div class="container-fluid">
+                <h2 class="text-center fs-3 m-4 fst-italic">My Team</h2>
             </div>
-        </header>
 
-        <div class="container-fluid">
-            <h2 class="text-center fs-3 m-4 fst-italic">My Team</h2>
-        </div>
+            <div class="d-flex flex-wrap justify-content-center bd-highlight m-5">
+                ${employeeCard}
+            </div>
 
-        <div class="d-flex flex-wrap justify-content-center bd-highlight m-5">
-        ${employeeCard}
-        </div>
         </body>
         <footer></footer>
-        </html>
+    </html>
     `;
 
     const fileName = './index.html';
