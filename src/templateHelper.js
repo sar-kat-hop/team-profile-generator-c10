@@ -1,7 +1,6 @@
-const { error } = require('console');
 const fs = require('fs');
 
-function renderPage(teamData) {
+function renderPage() {
     let teamCards = [];
 
     //need to make sure html framework appended on its own, sandwiching employee cards
@@ -55,7 +54,7 @@ function renderPage(teamData) {
                 ${employee.id}
                 </li>
                 <li class="lw-light lh-1 text-wrap p-0"> <b>Email: </b>
-                <a href="mailto:Email">${teamData.email}</a></li>
+                <a href="mailto:Email">${employee.email}</a></li>
                 <li class="lw-light lh-1 text-wrap p-0"> <b>
                 ${Object.keys(employee).slice(-1)}: </b>${employee.officeNumber || employee.gitHub || employee.school }
                 </li>
@@ -67,23 +66,16 @@ function renderPage(teamData) {
         teamCards.push(employeeCard);
     }
 
-    // const htmlPage = htmlHead + teamCards + htmlFoot;
-
     teamCards.forEach((employeeCard) => {
-        const fileLoc = './dist/index/html';
+        const fileLoc = '../dist/index/html';
         const content = htmlHead + employeeCard + htmlFoot;
         
-        fs.writeFile(fileLoc, content, (err) => {
+        //writeFileSync will prevent the console log message from printing until it's actually written the file
+        fs.writeFileSync(fileLoc, content, (err) => {
             if (err) throw err;
             console.log(`Team saved to page. View at: //${fileLoc}`)
         });
     });
-
-    //add everything together to write to page
-    // fs.writeFile("./dist/index.html", htmlPage, () => {
-    //     if(error) console.log("Error rendering html. ", error);
-    // });
-
 }
 
 module.exports = renderPage;
