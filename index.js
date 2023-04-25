@@ -40,12 +40,10 @@ function addNewEngi() {
     // const engineer = new Engineer (newEngi.name, newEngi.id, newEngi.email, newEngi.github);
     inquirer.prompt(addEngineer)
         .then((engineer) => {
-            // pushToTeam(engineer)
-            teamMembers.push(engineer);
-            console.log('Pushed new engineer to array');
-            continueMenu();
-                // .then(console.log(`Added engineer ${newEngi.name} to the team.`))
-                    // .then(continueMenu());
+            const newEngineer = new Engineer(engineer.name, engineer.id, engineer.email, engineer.github);
+            teamMembers.push(newEngineer);
+                console.log(`Added engineer ${engineer.name} to the team.`);
+                    continueMenu();
     });
 };
 
@@ -53,12 +51,10 @@ function addNewIntern() {
     // const intern = new Intern (newIntern.name, newIntern.id, newIntern.email, newIntern.school)
     inquirer.prompt(addIntern)
         .then((intern) => {
-            // pushToTeam(intern)
-            teamMembers.push(intern);
-            console.log('Pushed new intern to array');
-            continueMenu();
-                // .then(console.log(`Added intern ${newIntern.name} to the team.`))
-                    // .then(continueMenu());
+            const newIntern = new Intern(intern.name, intern.id, intern.email, intern.school);
+            teamMembers.push(newIntern);
+                console.log(`Added intern ${intern.name} to the team.`);
+                    continueMenu();
         });
 };
     
@@ -66,11 +62,13 @@ function continueMenu() {
     inquirer.prompt(continuePrompt).then((action) => {
         if (action.continue === 'yes') {
             console.log('Returning to main menu.');
-            menu();
+                menu();
+
         } else {
             if(!teamMembers) {
                 console.log('Closing Team Builder with no new employees added. Restart the app if you would like to add employees. Bye for now!')
                     (process.exit());
+
             } else {
                 renderPage(teamMembers);
                     (console.log('New employees added to your team. View ./dist/index.html in your browser to see your team.'))
@@ -80,42 +78,17 @@ function continueMenu() {
     });
 };
 
-// async function pushToTeam() {
-//     const engineer = new Engineer (engineer.name, engineer.id, engineer.email, engineer.github);
-//     const intern = new Intern (intern.name, intern.id, intern.email, intern.school)
-//     const manager = new Manager(manager.name, manager.email, manager.id, manager.office);
-
-//     if (employee === engineer) {
-//         teamMembers.push(engineer);
-//         console.log(`Added engineer ${engineer.name} to the team.`);
-//     } else if (employee === intern) {
-//         teamMembers.push(intern);
-//         console.log(`Added intern ${intern.name} to the team.`);
-//     } else if (employe === manager) {
-//         teamMembers.push(manager);
-//         console.log(`Hi, ${manager.name}.`)
-//     }
-// };
-
 async function start() {
     console.log("Welcome to TeamBuilder. Please follow the prompts to get started.");
 
     await inquirer.prompt(mgrPrompts)
         .then((manager) => {
-            // pushToTeam(manager)
-                // .then(menu());
-                teamMembers.push(manager);
-                console.log('Pushed new manager to array');
-                menu();
+            const newManager = new Manager(manager.name, manager.id, manager.email, manager.office);
+            teamMembers.push(newManager);
+                console.log(`Hi, ${manager.name}. Let's get started.`);
+                    menu();
         });
 }
-// function keypress() {
-//     return new Promise((resolve) => {
-//         process.stdin.once('data', (data) => {
-//             resolve(data.toString().trim());
-//         });
-//     });
-// }
 
 start();
 
